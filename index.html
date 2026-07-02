@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraNotes // Elite Productivity OS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="ambientParticleCanvas" class="ambient-canvas"></canvas>
+
+    <div class="app-container">
+        
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-orb"></div>
+                    <span>AuraNotes</span>
+                </div>
+                <button class="btn-icon mobile-close" id="sidebarCloseBtn" aria-label="Close Navigation Sidebar Menu">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-view="dashboard">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    Dashboard
+                </button>
+                <button class="nav-item" data-view="all-notes">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    All Notes
+                </button>
+                <button class="nav-item" data-view="favorites">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    Favorites
+                </button>
+                
+                <div class="sidebar-divider"></div>
+                <div class="sidebar-title">Categories</div>
+                <div id="categoryFilterList"></div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Interface Theme">
+                    <div class="toggle-track">
+                        <div class="toggle-thumb">
+                            <svg class="sun-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                            <svg class="moon-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                        </div>
+                    </div>
+                    <span class="theme-label">Light Mode</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="nav-left">
+                    <button class="btn-icon mobile-menu-toggle" id="sidebarOpenBtn" aria-label="Open Mobile Shell Navigation Drawer">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                    </button>
+                    <div class="search-wrapper">
+                        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="searchInput" placeholder="Search across workspace nodes... (Ctrl + F)" aria-label="Instant Engine Workspace Filter Target Search Field input">
+                        <div class="search-kbd-hint"><kbd>⌘F</kbd></div>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <select id="sortSelect" class="custom-select" aria-label="Sorting Pipeline Control Modifiers Field">
+                        <option value="newest">Sort: Newest</option>
+                        <option value="oldest">Sort: Oldest</option>
+                        <option value="alphabetical">Sort: A-Z</option>
+                    </select>
+                    <button class="btn btn-primary btn-ripple" id="newNoteBtn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>New Node</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="view-viewport">
+                <section id="dashboardView" class="view-section">
+                    <div class="view-header">
+                        <h1 class="animated-gradient-text">Workspace Hub</h1>
+                        <p class="subtitle">System data telemetry streams optimized in real-time.</p>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card glass-premium interactive-card">
+                            <div class="metric-icon m-total"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+                            <div class="metric-info">
+                                <h3 id="statTotalNotes">0</h3>
+                                <p>Total Modules</p>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-premium interactive-card">
+                            <div class="metric-icon m-pinned"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+                            <div class="metric-info">
+                                <h3 id="statPinnedNotes">0</h3>
+                                <p>Pinned Nodes</p>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-premium interactive-card">
+                            <div class="metric-icon m-fav"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+                            <div class="metric-info">
+                                <h3 id="statFavNotes">0</h3>
+                                <p>Starred Assets</p>
+                            </div>
+                        </div>
+                        <div class="metric-card glass-premium interactive-card">
+                            <div class="metric-icon m-cat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+                            <div class="metric-info">
+                                <h3 id="statCategories">0</h3>
+                                <p>Categories</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-title-container">
+                        <h2>High Priority Mountboard</h2>
+                        <span class="live-pulse-container"><span class="pulse-beacon"></span> Live Broadcast Stream</span>
+                    </div>
+                    <div class="notes-grid" id="pinnedDashboardGrid"></div>
+                </section>
+
+                <section id="notesView" class="view-section hidden">
+                    <div class="view-header">
+                        <h1 id="viewContainerTitle" class="animated-gradient-text">All Dynamic Nodes</h1>
+                    </div>
+                    
+                    <div class="notes-grid" id="notesGrid"></div>
+                    
+                    <div class="empty-state hidden" id="emptyState">
+                        <div class="empty-vector-container">
+                            <svg width="160" height="160" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="100" cy="100" r="80" fill="url(#svgEmptyGrad)" opacity="0.15" />
+                                <path d="M130 65H85C73.9543 65 65 73.9543 65 85V135C65 146.046 73.9543 155 85 155H135C146.046 155 155 146.046 155 135V90L130 65Z" stroke="url(#svgIconGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M125 65V90H150" stroke="url(#svgIconGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="100" cy="120" r="3" fill="currentColor"/>
+                                <circle cx="120" cy="120" r="3" fill="currentColor"/>
+                                <defs>
+                                    <linearGradient id="svgEmptyGrad" x1="20" y1="20" x2="180" y2="180" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="var(--accent-primary)"/>
+                                        <stop offset="1" stop-color="#ec4899"/>
+                                    </linearGradient>
+                                    <linearGradient id="svgIconGrad" x1="65" y1="65" x2="155" y2="155" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="var(--accent-primary)"/>
+                                        <stop offset="1" stop-color="#3b82f6"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <h3>Workspace Pipeline Disconnected</h3>
+                        <p>No architecture node blocks match your query filters. Spawn a fresh component segment node asset to initialize computational workflows.</p>
+                        <button class="btn btn-primary btn-ripple" id="emptyStateCreateBtn">Spawn Component Node</button>
+                    </div>
+                </section>
+            </div>
+
+            <footer class="app-footer">
+                <p>&copy; 2026 AuraNotes Lab Systems Engine Workspace Framework Operating Platform Platform Corp.</p>
+                <div class="footer-shortcuts">
+                    <span><kbd>Ctrl</kbd>+<kbd>N</kbd> Create</span>
+                    <span><kbd>Ctrl</kbd>+<kbd>S</kbd> Save Data</span>
+                    <span><kbd>Ctrl</kbd>+<kbd>F</kbd> Search Index</span>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <div class="editor-overlay" id="editorOverlay">
+        <div class="editor-panel glass-premium">
+            <div class="editor-header">
+                <h2 id="editorPanelTitle">Deconstruct Asset Block Node</h2>
+                <div class="editor-actions">
+                    <button class="btn-icon" id="editorPinBtn" title="Toggle Floating Mount Pin Position Configuration">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </button>
+                    <button class="btn-icon" id="editorFavBtn" title="Toggle Starred Catalog Asset Tag Flag">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                    </button>
+                    <button class="btn-icon" id="editorCloseBtn" aria-label="Terminate Workspace Element Sheet Composition Panel Window View Drawer">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <form class="editor-form" id="editorForm" autocomplete="off">
+                <div class="input-group">
+                    <input type="text" id="noteTitleInput" placeholder="Enter clean alphanumeric node identifier string header..." required maxlength="100">
+                </div>
+                
+                <div class="editor-meta-row">
+                    <div class="select-wrapper">
+                        <label for="noteCategoryInput">Cluster Namespace Domain Target</label>
+                        <select id="noteCategoryInput" class="custom-select">
+                            <option value="Personal">Personal</option>
+                            <option value="Work">Work</option>
+                            <option value="Study">Study</option>
+                            <option value="Ideas">Ideas</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div class="live-metrics">
+                        <span id="charCountDisplay" class="counter-pill">0 / 2000 Units</span>
+                        <span id="wordCountDisplay" class="counter-pill">0 Words</span>
+                    </div>
+                </div>
+
+                <div class="input-group textarea-group">
+                    <textarea id="noteContentInput" placeholder="Initialize data stream inputs script mappings execution schemas maps here..." required maxlength="2000"></textarea>
+                </div>
+
+                <div class="editor-footer-buttons">
+                    <span class="auto-save-indicator" id="autoSaveIndicator">
+                        <span class="pulse-dot"></span> System Autosaved Sync Status Ok
+                    </span>
+                    <button type="button" class="btn btn-secondary" id="editorCancelBtn">Abort</button>
+                    <button type="submit" class="btn btn-primary btn-ripple" id="editorSaveBtn">Commit Structure</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-container" id="deleteConfirmModal">
+        <div class="modal-card glass-premium scale-animation">
+            <div class="modal-alert-icon animate-bounce-subtle">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--danger-color)" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3>Purge System Component Memory Area Stack Data Node?</h3>
+            <p>You are initializing a structural master destructive drop process action. Data structures pointing inside memory registers context boundaries indexes for this allocation block will be deleted permanently.</p>
+            <div class="modal-buttons">
+                <button class="btn btn-secondary" id="deleteCancelBtn">Abort Process Action</button>
+                <button class="btn btn-danger btn-ripple" id="deleteConfirmBtn">Purge Core Target Allocation Block Node Entry</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-wrapper" id="toastWrapper"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
